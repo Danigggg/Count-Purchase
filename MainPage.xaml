@@ -1,0 +1,155 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:model="clr-namespace:ContaSpese.Model"
+             xmlns:viewmodel="clr-namespace:ContaSpese.ViewModel"
+             x:DataType="viewmodel:MainViewModel"
+             x:Class="ContaSpese.MainPage">
+
+    <Grid RowDefinitions="100,Auto,Auto,*"
+          ColumnDefinitions="190, 75,*"
+          Padding="10"
+          ColumnSpacing="10"
+          RowSpacing="8">
+
+        <Image Grid.ColumnSpan="3"
+               Source="dotnet_bot.png"/>
+
+        <Entry Grid.Row="1"
+               Grid.Column="0"
+               Placeholder="Aggiungi Nota"
+               Text="{Binding NotePurchase}"
+               TextColor="{AppThemeBinding Dark=white, Light=black}"/>
+
+        <Entry Grid.Row="1"
+               Grid.Column="1"
+               Placeholder="Importo"
+               Text="{Binding PurchaseCost}"
+               TextColor="{AppThemeBinding Dark=white, Light=black}"/>
+
+
+        <Button Grid.Row="1"
+                Grid.Column="2"
+                Text="Aggiungi"
+                TextColor="White"
+                FontSize="13"
+                Background="BlueViolet"
+                WidthRequest="85"
+                HeightRequest="40"
+                CornerRadius="15"
+                Command="{Binding AddCommand}"/>
+
+        <CollectionView Grid.Row="2"
+                        Grid.ColumnSpan="3"
+                        ItemsSource="{Binding Items}"
+                        SelectionMode="None"
+                        MaximumHeightRequest="390">
+
+            <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="{x:Type model:Purchase}">
+                        <SwipeView>
+                            <SwipeView.RightItems>
+                                <SwipeItems Mode="Reveal">
+                                    <SwipeItemView Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:MainViewModel}},Path=DeleteCommand}"
+                                                   CommandParameter="{Binding .}">
+
+                                        <Frame BackgroundColor="Red"
+                                               Padding="10">
+                                            <Label Text="Cancella"
+                                                   TextColor="White"
+                                                   VerticalOptions="Center"
+                                                   HorizontalOptions="End"
+                                                   FontSize="15"/>
+                                        </Frame>
+
+                                    </SwipeItemView>
+                                </SwipeItems>
+                            </SwipeView.RightItems>
+
+                            <SwipeView.LeftItems>
+                                <SwipeItems Mode="Reveal">
+                                    <SwipeItemView Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:MainViewModel}},Path=PinUpCommand}"
+                                                   CommandParameter="{Binding .}">
+
+                                        <Frame BackgroundColor="LimeGreen"
+                                               Padding="10"
+                                               WidthRequest="70">
+                                            <Label Text="Fissa"
+                                                   TextColor="White"
+                                                   VerticalOptions="Center"
+                                                   HorizontalOptions="Center"
+                                                   FontSize="16"/>
+                                        </Frame>
+
+                                    </SwipeItemView>
+
+                                    <SwipeItemView Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:MainViewModel}},Path=UnPinUpCommand}"
+                                                   CommandParameter="{Binding .}"
+                                                   IsVisible="{Binding isFavorite}">
+
+                                        <Frame BackgroundColor="DimGrey"
+                                               Padding="10"
+                                               WidthRequest="110">
+                                            <Label Text="Non Fissare"
+                                                   TextColor="White"
+                                                   VerticalOptions="Center"
+                                                   HorizontalOptions="Start"
+                                                   FontSize="16"/>
+                                        </Frame>
+
+                                    </SwipeItemView>
+                                </SwipeItems>
+                            </SwipeView.LeftItems>
+
+                            <Frame Style="{StaticResource CardView}"
+                                   MinimumHeightRequest="50">
+                            
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:MainViewModel}},Path=TapCommand}"
+                                                          CommandParameter="{Binding .}"/>
+                                </Frame.GestureRecognizers>
+                            
+                                <Grid ColumnDefinitions="140,155,*">
+                                    <Label  Grid.Column="0"
+                                            Text="{Binding note}"
+                                            VerticalOptions="Center"
+                                            FontSize="14"
+                                            TextColor="DimGrey"
+                                            Margin="10"/>
+
+                                    <Label  Grid.Column="1"
+                                            Text="{Binding purchaseCost , StringFormat='{}{0} €'}"
+                                            VerticalOptions="Center"
+                                            HorizontalOptions="End"
+                                            FontSize="17"
+                                            TextColor="Black"
+                                            Margin="10"/>
+
+                                    <Image Grid.Column="2"
+                                           Source="pin.png"
+                                           HeightRequest="40"
+                                           WidthRequest="35"
+                                           IsVisible="{Binding isFavorite}"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="End"
+                                           Margin="16,0"/>
+                                </Grid>
+                            </Frame>
+                        </SwipeView>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+
+        </CollectionView>
+
+        <Label  Grid.Row="3"
+                Grid.Column="3"
+                WidthRequest="200"
+                Text="{Binding SumOfAll, StringFormat='Totale : {0} €'}"
+                HorizontalTextAlignment="End"
+                HorizontalOptions="End"
+                FontSize="17"
+                TextColor="{AppThemeBinding Dark=white, Light=black}"/>
+
+    </Grid>
+
+</ContentPage>
